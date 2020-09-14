@@ -1,0 +1,7 @@
+note over browser:
+Web page is already loaded.
+The user fill the input and click "Save" button.
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa\nRequest Payload: {"content":"azdazd","date":"2020-09-14T08:26:52.248Z"}
+server-->browser: HTTP 201\n Response: {"message":"note created"}
