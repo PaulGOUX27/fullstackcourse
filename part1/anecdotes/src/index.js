@@ -7,19 +7,38 @@ const Button = ({text, handleClick}) => (
     </button>
 )
 
-const App = (props) => {
-    const [selected, setSelected] = useState(0)
+const Anecdote = ({anecdotes, index, voteArray}) => {
+    return (
+        <div>
+            <div>{anecdotes[index]}</div>
+            <div>Has {voteArray[index]} vote{voteArray[index] > 1 ? 's' : ''}</div>
+        </div>
+    )
+}
+
+const App = ({anecdotes}) => {
+    const [selected, setSelected] = useState(0);
+    const [voteArray, setVoteArray] = useState(Array(anecdotes.length).fill(0));
 
     const handleRandomClick = () => {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
         setSelected(Math.floor(Math.random() * Math.floor(anecdotes.length)));
-        console.log(selected);
+    }
+
+    const handleVoteClick = () => {
+        const newVoteArray = [...voteArray];
+        newVoteArray[selected]++;
+        setVoteArray(newVoteArray);
     }
 
     return (
         <div>
-            <div>{props.anecdotes[selected]}</div>
+            <h1>Anecdote of the day</h1>
+            <Anecdote index={selected} voteArray={voteArray} anecdotes={anecdotes}/>
+            <Button handleClick={handleVoteClick} text="Vote"/>
             <Button handleClick={handleRandomClick} text="Next anecdote"/>
+            <h1>Anecdote with most votes</h1>
+            <Anecdote index={voteArray.indexOf(Math.max(...voteArray))} voteArray={voteArray} anecdotes={anecdotes}/>
         </div>
     )
 }
