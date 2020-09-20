@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
+import Countries from "./component/Countries";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [countries, setCountries] = useState([])
+    const [filter, setFilter] = useState('');
+
+    useEffect(() => {
+        axios.get(`https://restcountries.eu/rest/v2/all`)
+            .then(response => {
+                setCountries(response.data);
+            })
+    }, [])
+
+    // This solution is better, but need to throttle it. I didn't succeed during implementation
+    /*
+    useEffect(() => {
+            if (!filter) {
+                setCountries([]);
+                return;
+            }
+            axios.get(`https://restcountries.eu/rest/v2/name/${filter}`)
+                .then(response => {
+                    setCountries(response.data);
+                })
+    }, [filter])
+    */
+
+    const handleFilter = (event) => {
+        setFilter(event.target.value)
+    }
+
+    const filteredCountries =
+        !filter ? [] : countries.filter(country => country.name.toLowerCase().includes(filter.toLowerCase()))
+
+    return (
+        <div className="App">
+            Find countries
+            <input value={filter} onChange={handleFilter}/>
+            <Countries countries={filteredCountries}/>
+        </div>
+    );
 }
 
 export default App;
