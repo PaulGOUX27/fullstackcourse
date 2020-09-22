@@ -3,12 +3,17 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Numbers from "./components/Numbers";
 import personService from './service/person';
+import Notification from "./components/Notification";
 
 const App = () => {
     const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState('');
+    const [message, setMessage] = useState(null);
+    const [type, setType] = useState('success')
+    const SUCCESS_NOTIF = 'success'
+    const ERROR_NOTIF = 'error'
 
     useEffect(() => {
         personService.getAll()
@@ -16,6 +21,22 @@ const App = () => {
                 setPersons(response)
             });
     }, [])
+
+    const setSuccessMessage = (msg) => {
+        setType(SUCCESS_NOTIF);
+        setMessage(msg);
+        setTimeout(() => {
+            setMessage(null)
+        }, 5000)
+    }
+
+    const setErrorMessage = (msg) => {
+        setType(ERROR_NOTIF);
+        setMessage(msg);
+        setTimeout(() => {
+            setMessage(null)
+        }, 5000)
+    }
 
     const handleNewName = (event) => {
         setNewName(event.target.value);
@@ -42,19 +63,25 @@ const App = () => {
                 `${newPerson.name} is already added to phonebook, replace the old number with the new one ?`)
             ) {
                 const id = persons.find(person => person.name.toLowerCase() === newName.toLowerCase()).id
-              personService.update(id, newPerson)
-                  .then(() => {
-                      personService.getAll()
-                          .then(response => {
-                              setPersons(response)
-                          });
-                  })
+                personService.update(id, newPerson)
+                    .then((person) => {
+                        setSuccessMessage(`Updated ${person.name}`)
+                        personService.getAll()
+                            .then(response => {
+                                setPersons(response)
+                            });
+                    })
+                    .catch(() => {
+                        //TODO Check status code
+                        setErrorMessage(`Information about ${newName} has already been removed from server.`)
+                    })
             }
             return;
         }
 
         personService.create(newPerson)
-            .then(() => {
+            .then((person) => {
+                setSuccessMessage(`Created ${person.name}`)
                 personService.getAll()
                     .then(response => {
                         setPersons(response)
@@ -69,6 +96,8 @@ const App = () => {
         if (window.confirm(`Delete ${person.name} ?`)) {
             personService.remove(person.id)
                 .then(() => {
+                        setSuccessMessage(`Delete ${person.name}`)
+
                         personService.getAll()
                             .then(response => {
                                 setPersons(response)
@@ -83,12 +112,13 @@ const App = () => {
 
     return (
         <div>
-            <h2>Phonebook</h2>
+            <h1>Phonebook</h1>
+            <Notification message={message} type={type}/>
             <Filter filter={filter} handleFilter={handleFilter}/>
-            <h3>Add a new</h3>
+            <h2>Add a new</h2>
             <PersonForm handleAddPerson={handleAddPerson} handleNewName={handleNewName}
                         handleNewNumber={handleNewNumber} newName={newName} newNumber={newNumber}/>
-            <h3>Numbers</h3>
+            <h2>Numbers</h2>
             <Numbers persons={filteredPersons} handleDelete={handleDelete}/>
         </div>
     )
