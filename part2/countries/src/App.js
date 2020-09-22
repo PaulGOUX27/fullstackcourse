@@ -38,7 +38,7 @@ function App() {
         <div className="App">
             Find countries
             <input value={filter} onChange={handleFilter}/>
-            <Countries countries={filteredCountries}/>
+            <Countries countries={filteredCountries} handleShow={handleFilter}/>
         </div>
     );
 }
