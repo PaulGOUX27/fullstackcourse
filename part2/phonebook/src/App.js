@@ -58,7 +58,7 @@ const App = () => {
             number: newNumber
         };
 
-        if (persons.some(person => person.name.toLowerCase() === newName.toLowerCase())) {
+        if (persons.some(person => person.name === newName)) {
             if (window.confirm(
                 `${newPerson.name} is already added to phonebook, replace the old number with the new one ?`)
             ) {
