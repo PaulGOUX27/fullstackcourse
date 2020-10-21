@@ -18,7 +18,7 @@ blogRouter.get('/', async (request, response) => {
 
 blogRouter.post('/', async (request, response) => {
     if(!request.body.title || !request.body.url) {
-        response.status(400).end();
+        return response.status(400).end();
     }
 
     if(!request.body.likes) {
