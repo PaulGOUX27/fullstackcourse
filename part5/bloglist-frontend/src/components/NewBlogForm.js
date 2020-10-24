@@ -19,17 +19,20 @@ const NewBlogForm = ({ handleNewLogin }) => {
         <h2>Create new blog</h2>
         <div>
                     Title :
-          <input type="text" value={title} onChange={({ target }) => setTitle(target.value)}/>
+          <input type="text" value={title} onChange={({ target }) => setTitle(target.value)}
+            id="title"/>
         </div>
         <div>
                     Author :
-          <input type="text" value={author} onChange={({ target }) => setAuthor(target.value)}/>
+          <input type="text" value={author} onChange={({ target }) => setAuthor(target.value)}
+            id="author"/>
         </div>
         <div>
                     Url :
-          <input type="text" value={url} onChange={({ target }) => setUrl(target.value)}/>
+          <input type="text" value={url} onChange={({ target }) => setUrl(target.value)}
+            id="url"/>
         </div>
-        <button type="submit">Create</button>
+        <button type="submit" id="add-note">Create</button>
       </form>
     </div>
   )

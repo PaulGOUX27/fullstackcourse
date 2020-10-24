@@ -53,17 +53,31 @@ const App = () => {
       setSuccessMessage('New blog add')
       blogFormRef.current.toggleVisibility()
       blogService.getAll().then(blogs =>
-        setBlogs( blogs )
+        setBlogs( blogs.sort(function(a, b) { return b.likes - a.likes}) )
       )
     } catch (e) {
       setErrorMessage('Error when creating a new blog :(')
     }
   }
 
+  const handleDeleteBlog = async (blog) => {
+    await blogService.remove(blog)
+    const newBlogs = blogs.filter((el) => el.id !== blog.id)
+    setBlogs(newBlogs)
+  }
+
   const handleLogout = () => {
     window.localStorage.removeItem('user')
     blogService.setToken(null)
     setUser(null)
+  }
+
+  const handleLike = async (blog) => {
+    const newBlog = await blogService.update({ ...blog, likes: blog.likes + 1 })
+    const newBlogs = [...blogs]
+    newBlogs[blogs.findIndex((el) => el.id === blog.id)] = newBlog
+    newBlogs.sort(function(a, b) { return b.likes - a.likes})
+    setBlogs(newBlogs)
   }
 
   const setSuccessMessage = (msg) => {
@@ -84,7 +98,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort(function(a, b) { return b.likes - a.likes}) )
     )
   }, [])
 
@@ -97,7 +111,7 @@ const App = () => {
         <NewBlogForm handleNewLogin={handleNewBlog} />
       </Toggleable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDeleteBlog={handleDeleteBlog}/>
       )}
     </div>
   )
