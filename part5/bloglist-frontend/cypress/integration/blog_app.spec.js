@@ -36,7 +36,7 @@ describe('Blog app', function() {
     })
   })
 
-  describe.only('When logged in', function() {
+  describe('When logged in', function() {
     beforeEach(function() {
       // cy.login({ username: 'pgoux', password: 'bonjour' })
       cy.get('#username').type('pgoux')
@@ -58,7 +58,7 @@ describe('Blog app', function() {
       cy.contains('View')
     })
 
-    describe.only('when a blog exists', function() {
+    describe('when a blog exists', function() {
       beforeEach(function() {
         cy.contains('New note').click()
         cy.get('#url').type('www.guthib.com')
