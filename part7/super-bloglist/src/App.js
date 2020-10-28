@@ -8,9 +8,12 @@ import { errorNotification, successNotification } from './reducers/notificationR
 import { createBlog, getAllBlog } from './reducers/blogReducer'
 import BlogList from './components/BlogList'
 import { loginFromLocalStorage, logout } from './reducers/userReducer'
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
+import Blog from './components/Blog'
 
 const App = () => {
     const user = useSelector(state => state.user)
+    const blogs = useSelector(state => state.blogs)
     const dispatch = useDispatch()
 
     const blogFormRef = useRef()
@@ -34,17 +37,30 @@ const App = () => {
         dispatch(logout())
     }
 
-    const loggedInView = () => (
-        <div>
-            <h2>blogs</h2>
-            {user.name} is logged in
-            <button onClick={handleLogout}>Logout</button>
-            <Toggleable buttonLabel="New blog" ref={blogFormRef}>
-                <NewBlogForm handleNewLogin={handleNewBlog}/>
-            </Toggleable>
-            <BlogList/>
-        </div>
-    )
+    const match = useRouteMatch('/blogs/:id')
+    const blog = match
+        ? blogs.find(anecdote => anecdote.id === match.params.id)
+        : null
+
+    const loggedInView = () => {
+        return (
+            <div>
+                <h2>blogs</h2>
+                {user.name} is logged in
+                <button onClick={handleLogout}>Logout</button>
+                <Toggleable buttonLabel="New blog" ref={blogFormRef}>
+                    <NewBlogForm handleNewLogin={handleNewBlog}/>
+                </Toggleable>
+                <Switch >
+                    <Route path="/blogs/:id">
+                        <Blog blog={blog}/>
+                    </Route>
+                    <Route path="/">
+                        <BlogList/>
+                    </Route>
+                </Switch>
+            </div>
+        )}
 
     return (
         <div>

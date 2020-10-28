@@ -1,48 +1,44 @@
-import React, { useState } from 'react'
+import React  from 'react'
 import { deleteBlog, voteBlog } from '../reducers/blogReducer'
 import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 const Blog = ({ blog }) => {
-    const [detail, setDetail] = useState(false)
     const dispatch = useDispatch()
+    const history = useHistory()
 
     const handleDeleteBlog = async (blog) => {
         dispatch(deleteBlog(blog))
+        history.push('/')
     }
     const handleLike = async (blog) => {
         dispatch(voteBlog(blog))
     }
 
-    const handleChangeDetail = () => {
-        setDetail(!detail)
-    }
-
-    if (!detail) {
-        return (<div className="blog">
-            {blog.title} {blog.author}
-            <button onClick={handleChangeDetail}>View</button>
-        </div>)
-    }
+    if(!blog) return (<div>Blog not found</div>)
 
     return (
         <div className="blog">
-            {blog.title}
-            <button onClick={handleChangeDetail}>Hide</button>
-            <br/>
-            {blog.description}
-            <br/>
-            Like {blog.likes}
-            <button onClick={() => {
-                handleLike(blog)
-            }}>Like
-            </button>
-            <br/>
-            {blog.author}
-            <br/>
-            <button onClick={() => {
-                handleDeleteBlog(blog)
-            }}>Delete
-            </button>
+            <h2>{blog.title}</h2>
+            <div>
+                {blog.description}
+            </div>
+            <div>
+                Like {blog.likes}
+                <button onClick={() => {
+                    handleLike(blog)
+                }}>Like
+                </button>
+            </div>
+            <div>
+            added by{blog.author}
+            </div>
+            <div>
+                <button onClick={() => {
+                    handleDeleteBlog(blog)
+                }}>Delete
+                </button>
+            </div>
         </div>
     )
 
