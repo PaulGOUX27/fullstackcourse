@@ -6,7 +6,7 @@ const Notification = () => {
         return state.notification
     })
 
-    if(!notification) return (<></>)
+    if (!notification) return (<></>)
 
     return (
         <div id="notification" className={notification.type}>
